@@ -1,0 +1,12 @@
+ if (txt_quant.Text != "")
+            {
+                int qty = int.Parse(txt_quant.Text);
+                double price = int.Parse(txt_price.Text);
+                double Discount = int.Parse(txt_dis.Text);
+                double total = price * qty - Discount;
+                sub_total.Text = total.ToString();
+            }
+            else
+            {
+                sub_total.Text = "0";
+            }

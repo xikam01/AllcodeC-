@@ -1,0 +1,44 @@
+if (gunaComboBox1.SelectedItem.ToString() == "Admin")
+            {
+
+                if (gunaComboBox1.SelectedItem.ToString() == "Admin")
+                {
+                    if (gunaTextBox1.Text == "Admin" && gunaTextBox2.Text == "1234")
+                    {
+                        Dashboard dd = new Dashboard();
+                        dd.Show();
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please Entar Role");
+                    }
+
+                }
+                //else
+                //{
+                //    MessageBox.Show("Please Entar Role ");
+                //}
+            }
+
+            if (gunaComboBox1.SelectedIndex > -2)
+            {
+                if (gunaComboBox1.SelectedItem.ToString() == "User")
+                {
+                    if (gunaTextBox1.Text == "User" && gunaTextBox2.Text == "1234")
+                    {
+                        Dash1 daa = new Dash1();
+                        daa.Show();
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please Entar Role");
+                    }
+                }
+
+            }
+            else
+            {
+                //MessageBox.Show("Select A Role");
+            }

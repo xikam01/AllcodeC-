@@ -1,0 +1,361 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace WindowsFormsApplication2
+{
+    public partial class product111 : UserControl
+    {
+        public product111()
+        {
+            InitializeComponent();
+        }
+        SqlConnection con = new SqlConnection("Data Source=DESKTOP-I77QVB4;Initial Catalog=Hidaaya Managment System;Integrated Security=True");
+       
+        SqlCommand cmd;
+        SqlDataAdapter da;
+        int ID = 0;
+
+        private void product111_Load(object sender, EventArgs e)
+        {
+            con.Open();
+            DataTable dt = new DataTable();
+            da = new SqlDataAdapter("select * from Product", con);
+            da.Fill(dt);
+
+            Dgv.DataSource = dt;
+            con.Close();
+        }
+
+        private void gunaButton1_Click(object sender, EventArgs e)
+        {
+            if (txt_p_id.Text != "" && txt_Name.Text != "" && txt_Quantity.Text != ""  && Dtp.Text != "")
+            {
+
+                string name = (gunaTextBox2.Text);
+                double a_qty = double.Parse(txt_AQ.Text);
+                double qty = double.Parse(txt_Quantity.Text);
+                double l_qty = a_qty - qty;
+                if (txt_Quantity.Text == "" || qty <= a_qty && qty > 0)
+                {
+                    con.Open();
+                    string update = "update Stock set Quantity='" + l_qty + "' where Store_ID='" + name + "'  ";
+                    SqlCommand cmd = new SqlCommand(update, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Order created successfuly", "Restuarant Order System", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    con.Close();
+
+                    {
+
+                        cmd = new SqlCommand("insert into Product values(@P_id, @Item_Name,@price, @Quantity, @Date)", con);
+                        con.Open();
+                        cmd.Parameters.AddWithValue("@P_id", txt_p_id.Text);
+                        cmd.Parameters.AddWithValue("@Item_Name", txt_Name.Text);
+                        cmd.Parameters.AddWithValue("@price", txtprice.Text);
+                        cmd.Parameters.AddWithValue("@Quantity", txt_Quantity.Text);
+                        cmd.Parameters.AddWithValue("@Date", Dtp.Value);
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                        MessageBox.Show("Record Saved Successfully");
+                        DisplayData();
+                        ClearData();
+                    }
+                }
+            }
+        }
+        private void DisplayData()
+        {
+            con.Open();
+            DataTable dt = new DataTable();
+            da = new SqlDataAdapter("select * from Product", con);
+            da.Fill(dt);
+            Dgv.DataSource = dt;
+            con.Close();
+
+        }
+        private void ClearData()
+        {
+           
+
+
+            ID = 0;
+        }
+
+        private void gunaButton4_Click(object sender, EventArgs e)
+        {
+            if (txt_p_id.Text != "" && txt_Name.Text != "" && txt_Quantity.Text != "" && Dtp.Text != "")
+            {
+                cmd = new SqlCommand("update Product set P_id=@P_id, Item_Name=@Item_Name, Quantity=@Quantity, Date=@Date where P_id=@P_id", con);
+                con.Open();
+                ID = Convert.ToInt32(txt_p_id.Text);
+                cmd.Parameters.AddWithValue("@P_id", txt_p_id.Text);
+                cmd.Parameters.AddWithValue("@Item_Name", txt_Name.Text);
+                cmd.Parameters.AddWithValue("@price", txtprice.Text);
+                cmd.Parameters.AddWithValue("@Quantity", txt_Quantity.Text);
+                cmd.Parameters.AddWithValue("@Date", Dtp.Value);
+                cmd.ExecuteNonQuery();
+                MessageBox.Show("Record Updated Successfully");
+                con.Close();
+                DisplayData();
+                ClearData();
+            }
+            else
+            {
+                MessageBox.Show("Please Select Record to Update");
+            }
+        }
+
+        private void gunaButton3_Click(object sender, EventArgs e)
+        {
+            if (txt_p_id.Text != "")
+            {
+                cmd = new SqlCommand("delete Product where P_id=@P_id", con);
+                con.Open();
+                ID = Convert.ToInt32(txt_p_id.Text);
+                cmd.Parameters.AddWithValue("@P_id", ID);
+                cmd.ExecuteNonQuery();
+                con.Close();
+                MessageBox.Show("Record Deleted Successfully!");
+                DisplayData();
+                ClearData();
+            }
+            else
+            {
+                MessageBox.Show("Please Select Record to Delete");
+            }
+          
+        }
+
+        private void gunaTextBox2_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (gunaTextBox2.Text != "")
+                {
+                    con.Open();
+                    string select = "select * from Stock where Store_ID=" + gunaTextBox2.Text + "";
+                    SqlCommand cmd = new SqlCommand(select, con);
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+
+
+                        txt_Name.Text = dr.GetValue(1).ToString();
+                        txt_AQ.Text = dr.GetValue(4).ToString();
+                    
+                    }
+                    con.Close();
+                }
+                else
+                {
+
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK,
+               MessageBoxIcon.Error);
+            }
+            finally
+            {
+                con.Close();
+
+            }
+        }
+
+        private void Dgv_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+             if (e.RowIndex >= 0)
+            {
+                DataGridViewRow Row = this.Dgv.Rows[e.RowIndex];
+
+                txt_p_id.Text = Row.Cells[0].Value.ToString();
+                txt_Name.Text = Row.Cells[1].Value.ToString();
+                txtprice.Text = Row.Cells[2].Value.ToString();
+                txt_Quantity.Text = Row.Cells[3].Value.ToString();
+               
+
+               
+
+
+
+            
+        }
+
+        }
+
+        private void gunaButton5_Click(object sender, EventArgs e)
+        {
+            product111_Load(this, null);
+        }
+
+        private void gunaButton2_Click(object sender, EventArgs e)
+        {
+            txt_AQ.Clear();
+            txt_Name.Clear();
+            txt_p_id.Clear();
+            txt_Quantity.Clear();
+            txtprice.Clear();
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+======================================================================================================================
+
+{
+                if (txt_v_Id.Text != "")
+                {
+                    con.Open();
+                    string select = "select * from vendor where ven_Id=" + txt_v_Id.Text + "";
+                    SqlCommand cmd = new SqlCommand(select, con);
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+
+                        txt_tybe.Text = dr.GetValue(2).ToString();
+                        txt_Aq.Text = dr.GetValue(4).ToString();
+                        txt_price.Text = dr.GetValue(5).ToString();
+                        txt_Add.Text = dr.GetValue(3).ToString();
+
+
+                    }
+                    con.Close();
+                }
+        
+    
+=======================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ if (gunaComboBox1.SelectedItem.ToString() == "Admin")
+            {
+
+                if (gunaComboBox1.SelectedItem.ToString() == "Admin")
+                {
+                    if (gunaTextBox1.Text == "Admin" && gunaTextBox2.Text == "1234")
+                    {
+                        Dashboard dd = new Dashboard();
+                        dd.Show();
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please Entar Role");
+                    }
+
+                }
+                //else
+                //{
+                //    MessageBox.Show("Please Entar Role ");
+                //}
+            }
+
+            if (gunaComboBox1.SelectedIndex > -2)
+            {
+                if (gunaComboBox1.SelectedItem.ToString() == "User")
+                {
+                    if (gunaTextBox1.Text == "User" && gunaTextBox2.Text == "1234")
+                    {
+                        Dash1 daa = new Dash1();
+                        daa.Show();
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please Entar Role");
+                    }
+                }
+
+            }
+            else
+            {
+                //MessageBox.Show("Select A Role");
+            }
+        }

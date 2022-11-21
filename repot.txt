@@ -1,0 +1,128 @@
+code report
+
+  SqlConnection con = new SqlConnection("Data Source=DESKTOP-I77QVB4;Initial Catalog=Hidaaya Managment System;Integrated Security=True");
+
+        SqlCommand cmd;
+        SqlDataAdapter da;
+        String date1;
+        String date2;
+        int ID = 0;
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            string select = "select * from Salling where S_id='" + textBox1.Text + "'";
+            SqlCommand cmd = new SqlCommand(select, con);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            con.Close();
+            selling66 cr = new selling66();
+            cr.Database.Tables["Salling"].SetDataSource(dt);
+            this.crystalReportViewer1.ReportSource = cr;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            string select = "select * from Salling where C_name='" + textBox2.Text + "'";
+            SqlCommand cmd = new SqlCommand(select, con);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            con.Close();
+            selling66 cr = new selling66();
+            cr.Database.Tables["Salling"].SetDataSource(dt);
+            this.crystalReportViewer1.ReportSource = cr;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                date1 = dateTimePicker1.Value.Year + "-" + dateTimePicker1.Value.Month + "-" + dateTimePicker1.Value.Day;
+                date2 = dateTimePicker2.Value.Year + "-" + dateTimePicker2.Value.Month + "-" + dateTimePicker2.Value.Day;
+                con.Open();
+                DataTable dt = new DataTable();
+                cmd = new SqlCommand("select * from Salling Where Date between'" + date1 + "' and '" + date2 + "'", con);
+                da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+
+                selling66 cr = new selling66();
+                cr.Database.Tables["Salling"].SetDataSource(dt);
+                this.crystalReportViewer1.ReportSource = cr;
+
+            }
+            catch (Exception Error)
+            {
+                MessageBox.Show(Error.ToString());
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+    }
+}
+
+
+code calculate
+
+
+                if (txtquanty.Text != "")
+                {
+                    int qty = int.Parse(txtquanty.Text);
+                    double price = int.Parse(txt_Price.Text);
+                    double Discount = int.Parse(txt_Discount.Text);
+                    double total = price * qty - Discount;
+                    txt_Total.Text = total.ToString();
+                }
+                else
+                {
+                    txt_Total.Text = "0";
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+                dateand time
+              =====================
+
+
+
+
+
+try
+            {
+                con.Open();
+                string select = "select * from payment where Pa_date between'" + timer1.Value + "'and '" + timer2.Value + "'";
+                SqlCommand cmd = new SqlCommand(select, con);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                con.Close();
+                CrystalReport3 cr = new CrystalReport3();
+                cr.Database.Tables["payment"].SetDataSource(dt);
+                this.crystalReportViewer1.ReportSource = cr;
+                txt_Id.Clear();
+                txt_name.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+
+
